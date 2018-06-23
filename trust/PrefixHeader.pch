@@ -1,0 +1,95 @@
+//
+//  PrefixHeader.pch
+//  trust
+//
+//  Created by 雷霰霆 on 2018/6/9.
+//  Copyright © 2018年 雷霰霆. All rights reserved.
+//
+
+#ifdef __OBJC__
+#import <UIColor+YYAdd.h>
+#endif
+
+
+//#ifndef PrefixHeader_pch
+//#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#define  kNavTitleFontSize 18
+#define  kBadgeTipStr @"badgeTip"
+
+#define kScreen_Bounds [UIScreen mainScreen].bounds
+#define kScreen_Height [UIScreen mainScreen].bounds.size.height
+#define kScreen_Width [UIScreen mainScreen].bounds.size.width
+
+#define kSafeArea_Top (kDevice_Is_iPhoneX? 44: 20)
+#define kSafeArea_Bottom (kDevice_Is_iPhoneX? 34: 0)
+#define kLine_MinHeight (1.0/ [UIScreen mainScreen].scale)
+
+
+#define kColorDDD kColorD8DDE4
+#define kColorCCC kColorD8DDE4
+#define kColorD8DDE4 [UIColor colorWithHexString:@"0xD8DDE4"]
+#define kColorBrandBlue [UIColor colorWithHexString:@"0x0060FF"]
+#define kColorSelectTabItem [UIColor colorWithHexString:@"0x4368F6"]
+#define kColorNavBG [UIColor colorWithHexString:@"0xFFFFFF"]
+#define kColorLightBlue  [UIColor colorWithHexString:@"0x136BFB"]
+#define kColorNavTitle [UIColor colorWithHexString:@"0x323A45"]
+
+
+// 判断设备
+#define kDevice_Is_iPhone4 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)
+#define kDevice_Is_iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+#define kDevice_Is_iPhone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(750, 1334), [[UIScreen mainScreen] currentMode].size) : NO)
+#define kDevice_Is_iPhone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242, 2208), [[UIScreen mainScreen] currentMode].size) : NO)
+#define kDevice_Is_iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+
+
+//常用变量
+#define DebugLog(s, ...) NSLog(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__])
+
+
+///=============================================
+/// @name Weak Object
+///=============================================
+#pragma mark - Weak Object
+
+/**
+ * @code
+ * ESWeak(imageView, weakImageView);
+ * [self testBlock:^(UIImage *image) {
+ *         ESStrong(weakImageView, strongImageView);
+ *         strongImageView.image = image;
+ * }];
+ *
+ * // `ESWeak_(imageView)` will create a var named `weak_imageView`
+ * ESWeak_(imageView);
+ * [self testBlock:^(UIImage *image) {
+ *         ESStrong_(imageView);
+ *     _imageView.image = image;
+ * }];
+ *
+ * // weak `self` and strong `self`
+ * ESWeakSelf;
+ * [self testBlock:^(UIImage *image) {
+ *         ESStrongSelf;
+ *         _self.image = image;
+ * }];
+ * @endcode
+ */
+
+#define ESWeak(var, weakVar) __weak __typeof(&*var) weakVar = var
+#define ESStrong_DoNotCheckNil(weakVar, _var) __typeof(&*weakVar) _var = weakVar
+#define ESStrong(weakVar, _var) ESStrong_DoNotCheckNil(weakVar, _var); if (!_var) return;
+
+#define ESWeak_(var) ESWeak(var, weak_##var);
+#define ESStrong_(var) ESStrong(weak_##var, _##var);
+
+/** defines a weak `self` named `__weakSelf` */
+#define ESWeakSelf      ESWeak(self, __weakSelf);
+/** defines a strong `self` named `_self` from `__weakSelf` */
+#define ESStrongSelf    ESStrong(__weakSelf, _self);
+
+//#endif /* PrefixHeader_pch */
